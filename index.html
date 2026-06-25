@@ -1,152 +1,192 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Darak 3andna | دارك عندنا</title>
+<title>Darak 3andna</title>
 
 <style>
-body{
-font-family:Arial,sans-serif;
+*{
 margin:0;
 padding:0;
-background:#f5f5f5;
-direction:rtl;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
 }
 
-header{
-background:#0d6efd;
-color:white;
-padding:20px;
-text-align:center;
+body{
+background:#fff;
 }
 
-nav{
-background:#222;
-padding:10px;
-text-align:center;
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:15px 20px;
+border-bottom:1px solid #eee;
+position:fixed;
+top:0;
+width:100%;
+background:white;
+z-index:1000;
 }
 
-nav a{
-color:white;
-text-decoration:none;
-margin:15px;
+.menu-btn{
+font-size:28px;
+cursor:pointer;
+}
+
+.logo{
+font-size:24px;
 font-weight:bold;
 }
 
-section{
-padding:25px;
-}
-
-.card{
-background:white;
-padding:20px;
-margin:15px 0;
-border-radius:10px;
-box-shadow:0 2px 5px rgba(0,0,0,0.1);
-}
-
-.btn{
-display:inline-block;
-padding:12px 20px;
-background:#25D366;
-color:white;
+.signin{
+color:#006AFF;
+font-weight:bold;
 text-decoration:none;
-border-radius:6px;
-margin-top:10px;
 }
 
-footer{
-background:#222;
-color:white;
+.sidebar{
+height:100%;
+width:0;
+position:fixed;
+top:0;
+left:0;
+background:white;
+overflow-x:hidden;
+transition:0.3s;
+z-index:2000;
+box-shadow:2px 0 10px rgba(0,0,0,0.1);
+}
+
+.sidebar-content{
+padding:20px;
+}
+
+.closebtn{
+font-size:30px;
+cursor:pointer;
+}
+
+.sidebar h2{
+margin-top:20px;
+}
+
+.hero{
+margin-top:100px;
+padding:20px;
 text-align:center;
-padding:15px;
-margin-top:30px;
+}
+
+.hero h1{
+font-size:40px;
+margin-bottom:25px;
+}
+
+.search-box{
+max-width:700px;
+margin:auto;
+display:flex;
+border:1px solid #ddd;
+border-radius:50px;
+overflow:hidden;
+}
+
+.search-box input{
+flex:1;
+padding:18px;
+border:none;
+outline:none;
+font-size:18px;
+}
+
+.search-box button{
+background:#006AFF;
+color:white;
+border:none;
+padding:18px 25px;
+cursor:pointer;
+}
+
+.bottom-nav{
+position:fixed;
+bottom:0;
+width:100%;
+background:white;
+border-top:1px solid #ddd;
+display:flex;
+justify-content:space-around;
+padding:12px 0;
+}
+
+.bottom-nav a{
+text-decoration:none;
+color:#333;
+font-size:14px;
+text-align:center;
 }
 </style>
-
 </head>
 
 <body>
 
-<header>
-<h1>🏠 Darak 3andna</h1>
-<p>دارك عندنا - وكالة عقارية في الجزائر</p>
-<p>Agence Immobilière en Algérie</p>
-</header>
-
-<nav>
-<a href="#home">الرئيسية</a>
-<a href="#sale">للبيع</a>
-<a href="#rent">للإيجار</a>
-<a href="#contact">اتصل بنا</a>
-</nav>
-
-<section id="home">
-
-<div class="card">
-<h2>مرحباً بكم في دارك عندنا</h2>
-<p>
-نساعدكم في شراء وبيع وكراء العقارات في الجزائر.
-</p>
-
-<p>
-Nous vous aidons à acheter, vendre et louer des biens immobiliers en Algérie.
-</p>
-
-<a class="btn" href="https://wa.me/213667834247">
-تواصل عبر واتساب
-</a>
+<div class="header">
+<div class="menu-btn" onclick="openMenu()">☰</div>
+<div class="logo">Darak 3andna</div>
+<a href="#" class="signin">Sign In</a>
 </div>
 
-</section>
+<div id="sidebar" class="sidebar">
+<div class="sidebar-content">
+<div class="closebtn" onclick="closeMenu()">✕</div>
 
-<section id="sale">
+<h2>Darak 3andna</h2>
 
-<div class="card">
-<h2>🏡 عقارات للبيع</h2>
-<p>شقق - منازل - أراضٍ - محلات تجارية</p>
+<br>
 
-<p>
-Appartements - Maisons - Terrains - Locaux commerciaux
-</p>
+<p>🏠 Home</p>
+<br>
+<p>🔑 Rentals</p>
+<br>
+<p>🏢 Buy</p>
+<br>
+<p>📞 Contact</p>
+<br>
+<p>⚙ Settings</p>
+
+</div>
 </div>
 
-</section>
+<div class="hero">
 
-<section id="rent">
+<h1>
+Rentals. Homes. Agents. Loans.
+</h1>
 
-<div class="card">
-<h2>🔑 عقارات للإيجار</h2>
-<p>اعثر على أفضل العقارات للإيجار.</p>
-
-<p>
-Trouvez les meilleurs biens à louer.
-</p>
+<div class="search-box">
+<input type="text" placeholder="Enter city, address or property">
+<button>Search</button>
 </div>
-
-</section>
-
-<section id="contact">
-
-<div class="card">
-<h2>📞 اتصل بنا</h2>
-
-<p>الهاتف: +213 667 834 247</p>
-
-<p>خنشلة - الجزائر</p>
-
-<a class="btn" href="https://wa.me/213667834247">
-WhatsApp
-</a>
 
 </div>
 
-</section>
+<div class="bottom-nav">
+<a href="#">Inbox</a>
+<a href="#">Plan</a>
+<a href="#">Favorites</a>
+<a href="#">Updates</a>
+<a href="#">Search</a>
+</div>
 
-<footer>
-© 2026 Darak 3andna - Tous droits réservés
-</footer>
+<script>
+function openMenu(){
+document.getElementById("sidebar").style.width="280px";
+}
+
+function closeMenu(){
+document.getElementById("sidebar").style.width="0";
+}
+</script>
 
 </body>
 </html>
