@@ -166,24 +166,24 @@ function toggleMenu() {
   document.querySelector(".sidebar").classList.toggle("active");
 }
 
-// ===== UI Update =====
+// ===== UI Update (FIXED) =====
 async function updateUI() {
-  if (!supabase) return;
 
-  const { data } = await supabase.auth.getUser();
+  const user = await getUser();
 
   const userInfo = document.getElementById("userInfo");
   const loginBtn = document.getElementById("loginBtn");
 
-  if (data.user) {
-    userInfo.innerText = data.user.email;
+  if (user) {
+    userInfo.innerText = user.email;
+
     loginBtn.innerText = "Logout";
     loginBtn.href = "#";
-    loginBtn.onclick = function () {
-      signOut().then(() => {
-        location.reload();
-      });
+
+    loginBtn.onclick = async function () {
+      await signOut();
     };
+
   } else {
     userInfo.innerText = "";
     loginBtn.innerText = "Login";
@@ -191,7 +191,7 @@ async function updateUI() {
   }
 }
 
-// ===== تشغيل عند فتح الصفحة =====
+// تشغيل عند فتح الصفحة
 updateUI();
 
 console.log("Index loaded successfully ✅");
