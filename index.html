@@ -8,119 +8,48 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 <style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}
+body{background:#f5f7fa;}
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial, sans-serif;
-}
-
-body{
-background:#f5f7fa;
-}
-
-/* ===== TOP BAR ===== */
 .topbar{
-position:fixed;
-top:0;
-left:0;
-right:0;
-height:70px;
-background:#fff;
-display:flex;
-align-items:center;
-justify-content:space-between;
-padding:0 20px;
-box-shadow:0 2px 10px rgba(0,0,0,.08);
-z-index:999;
+position:fixed;top:0;left:0;right:0;height:70px;
+background:#fff;display:flex;align-items:center;
+justify-content:space-between;padding:0 20px;
+box-shadow:0 2px 10px rgba(0,0,0,.08);z-index:999;
 }
 
-.menu-btn{
-font-size:28px;
-border:none;
-background:none;
-cursor:pointer;
-}
+.menu-btn{font-size:28px;border:none;background:none;cursor:pointer;}
 
-.logo{
-font-size:26px;
-font-weight:700;
-color:#006AFF;
-}
+.logo{font-size:26px;font-weight:700;color:#006AFF;}
 
-.signin{
-text-decoration:none;
-color:#006AFF;
-font-weight:bold;
-}
+.signin{text-decoration:none;color:#006AFF;font-weight:bold;}
 
-.user-info{
-font-size:14px;
-color:#333;
-margin-right:10px;
-}
+.user-info{font-size:14px;color:#333;margin-right:10px;}
 
-/* ===== SIDEBAR ===== */
 .sidebar{
-position:fixed;
-top:0;
-left:-320px;
-width:300px;
-height:100%;
-background:#fff;
-transition:.3s;
-z-index:1000;
-box-shadow:2px 0 20px rgba(0,0,0,.15);
-overflow:auto;
+position:fixed;top:0;left:-320px;width:300px;height:100%;
+background:#fff;transition:.3s;z-index:1000;
+box-shadow:2px 0 20px rgba(0,0,0,.15);overflow:auto;
 }
 
-.sidebar.active{
-left:0;
-}
+.sidebar.active{left:0;}
 
-.sidebar-header{
-padding:20px;
-border-bottom:1px solid #eee;
-}
+.sidebar-header{padding:20px;border-bottom:1px solid #eee;}
 
-.sidebar-header button{
-font-size:30px;
-border:none;
-background:none;
-cursor:pointer;
-}
+.sidebar-header button{font-size:30px;border:none;background:none;cursor:pointer;}
 
-.sidebar-header h2{
-margin-top:10px;
-color:#006AFF;
-}
+.sidebar-header h2{margin-top:10px;color:#006AFF;}
 
-.sidebar a{
-display:block;
-padding:18px 25px;
-text-decoration:none;
-color:#222;
-font-size:18px;
-}
+.sidebar a{display:block;padding:18px 25px;text-decoration:none;color:#222;font-size:18px;}
+.sidebar a:hover{background:#f5f5f5;}
 
-.sidebar a:hover{
-background:#f5f5f5;
-}
-
-/* ===== HERO ===== */
 .hero{
 height:90vh;
 background:url('https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=1600') center/cover;
-display:flex;
-align-items:center;
-justify-content:center;
-color:#fff;
-font-size:40px;
-font-weight:bold;
+display:flex;align-items:center;justify-content:center;
+color:#fff;font-size:40px;font-weight:bold;
 text-shadow:0 5px 10px rgba(0,0,0,.4);
 }
-
 </style>
 
 </head>
@@ -128,74 +57,66 @@ text-shadow:0 5px 10px rgba(0,0,0,.4);
 
 <!-- TOP BAR -->
 <div class="topbar">
-  <button class="menu-btn" onclick="toggleMenu()">☰</button>
+<button class="menu-btn" onclick="toggleMenu()">☰</button>
+<div class="logo">Darak 3andna</div>
 
-  <div class="logo">Darak 3andna</div>
-
-  <div style="display:flex;align-items:center;gap:10px;">
-    <span id="userInfo" class="user-info"></span>
-    <a id="loginBtn" class="signin" href="login.html">Login</a>
-  </div>
+<div style="display:flex;align-items:center;gap:10px;">
+<span id="userInfo" class="user-info"></span>
+<a id="loginBtn" class="signin" href="login.html">Login</a>
+</div>
 </div>
 
 <!-- SIDEBAR -->
 <div class="sidebar">
-  <div class="sidebar-header">
-    <button onclick="toggleMenu()">×</button>
-    <h2>Menu</h2>
-  </div>
+<div class="sidebar-header">
+<button onclick="toggleMenu()">×</button>
+<h2>Menu</h2>
+</div>
 
-  <a href="index.html">🏠 Home</a>
-  <a href="add-property.html">➕ أضف عقارك</a>
-  <a href="#" onclick="signOut()">🚪 Logout</a>
+<a href="index.html">🏠 Home</a>
+<a href="add-property.html">➕ أضف عقارك</a>
+<a href="#" onclick="signOut()">🚪 Logout</a>
 </div>
 
 <!-- HERO -->
 <div class="hero">
-  Find Your Dream Home
+Find Your Dream Home
 </div>
 
-<!-- SUPABASE -->
+<!-- SCRIPTS -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="app.js"></script>
 
 <script>
-
-// ===== Sidebar =====
-function toggleMenu() {
-  document.querySelector(".sidebar").classList.toggle("active");
+function toggleMenu(){
+document.querySelector(".sidebar").classList.toggle("active");
 }
 
-// ===== UI Update (FIXED) =====
-async function updateUI() {
+// تحديث الواجهة
+async function updateUI(){
+const user = await getUser();
 
-  const user = await getUser();
+const userInfo = document.getElementById("userInfo");
+const loginBtn = document.getElementById("loginBtn");
 
-  const userInfo = document.getElementById("userInfo");
-  const loginBtn = document.getElementById("loginBtn");
+if(user){
+userInfo.innerText = user.email;
 
-  if (user) {
-    userInfo.innerText = user.email;
+loginBtn.innerText = "Logout";
+loginBtn.href = "#";
 
-    loginBtn.innerText = "Logout";
-    loginBtn.href = "#";
-
-    loginBtn.onclick = async function () {
-      await signOut();
-    };
-
-  } else {
-    userInfo.innerText = "";
-    loginBtn.innerText = "Login";
-    loginBtn.href = "login.html";
-  }
+loginBtn.onclick = async () => {
+await signOut();
+};
+}else{
+userInfo.innerText = "";
+loginBtn.innerText = "Login";
+loginBtn.href = "login.html";
+loginBtn.onclick = null;
+}
 }
 
-// تشغيل عند فتح الصفحة
 updateUI();
-
-console.log("Index loaded successfully ✅");
-
 </script>
 
 </body>
