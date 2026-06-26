@@ -55,6 +55,12 @@ color:#006AFF;
 font-weight:bold;
 }
 
+.user-info{
+font-size:14px;
+color:#333;
+margin-right:10px;
+}
+
 /* ===== SIDEBAR ===== */
 .sidebar{
 position:fixed;
@@ -123,8 +129,13 @@ text-shadow:0 5px 10px rgba(0,0,0,.4);
 <!-- TOP BAR -->
 <div class="topbar">
   <button class="menu-btn" onclick="toggleMenu()">☰</button>
+
   <div class="logo">Darak 3andna</div>
-  <a class="signin" href="#" onclick="signInPrompt()">Login</a>
+
+  <div style="display:flex;align-items:center;gap:10px;">
+    <span id="userInfo" class="user-info"></span>
+    <a id="loginBtn" class="signin" href="login.html">Login</a>
+  </div>
 </div>
 
 <!-- SIDEBAR -->
@@ -146,7 +157,6 @@ text-shadow:0 5px 10px rgba(0,0,0,.4);
 
 <!-- SUPABASE -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <script src="app.js"></script>
 
 <script>
@@ -156,18 +166,35 @@ function toggleMenu() {
   document.querySelector(".sidebar").classList.toggle("active");
 }
 
-// ===== اختبار سريع =====
-console.log("Index loaded successfully ✅");
+// ===== UI Update =====
+async function updateUI() {
+  if (!supabase) return;
 
-// ===== مثال تسجيل دخول تجريبي =====
-function signInPrompt() {
-  const email = prompt("Email:");
-  const password = prompt("Password:");
-  
-  if (email && password) {
-    signIn(email, password);
+  const { data } = await supabase.auth.getUser();
+
+  const userInfo = document.getElementById("userInfo");
+  const loginBtn = document.getElementById("loginBtn");
+
+  if (data.user) {
+    userInfo.innerText = data.user.email;
+    loginBtn.innerText = "Logout";
+    loginBtn.href = "#";
+    loginBtn.onclick = function () {
+      signOut().then(() => {
+        location.reload();
+      });
+    };
+  } else {
+    userInfo.innerText = "";
+    loginBtn.innerText = "Login";
+    loginBtn.href = "login.html";
   }
 }
+
+// ===== تشغيل عند فتح الصفحة =====
+updateUI();
+
+console.log("Index loaded successfully ✅");
 
 </script>
 
