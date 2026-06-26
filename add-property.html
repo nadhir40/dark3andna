@@ -1,19 +1,163 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>إضافة عقار | Darak 3andna</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f5f7fa;
+padding:20px;
+}
+
+.container{
+max-width:700px;
+margin:auto;
+background:white;
+padding:25px;
+border-radius:15px;
+box-shadow:0 5px 20px rgba(0,0,0,.1);
+}
+
+h1{
+text-align:center;
+margin-bottom:25px;
+color:#006AFF;
+}
+
+input,
+textarea,
+select{
+width:100%;
+padding:15px;
+margin-bottom:15px;
+border:1px solid #ddd;
+border-radius:8px;
+font-size:16px;
+}
+
+textarea{
+height:120px;
+resize:none;
+}
+
+button{
+width:100%;
+padding:16px;
+background:#006AFF;
+color:white;
+font-size:18px;
+border:none;
+border-radius:10px;
+cursor:pointer;
+}
+
+button:hover{
+background:#0053cc;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>إضافة عقار جديد</h1>
+
 <form id="propertyForm">
 
-<input type="text" id="title" placeholder="عنوان العقار" required>
+<input
+type="text"
+id="title"
+placeholder="عنوان العقار"
+required>
 
-<textarea id="description" placeholder="الوصف"></textarea>
+<select id="operation">
 
-<input type="text" id="price" placeholder="السعر">
+<option value="بيع">بيع</option>
 
-<input type="text" id="city" placeholder="المدينة">
+<option value="كراء">كراء</option>
 
-<input type="text" id="phone" placeholder="رقم الهاتف">
+</select>
 
-<input type="file" id="image">
+<select id="property_type">
+
+<option value="شقة">شقة</option>
+
+<option value="منزل">منزل</option>
+
+<option value="فيلا">فيلا</option>
+
+<option value="أرض">أرض</option>
+
+<option value="محل">محل تجاري</option>
+
+</select>
+
+<input
+type="number"
+id="price"
+placeholder="السعر">
+
+<input
+type="text"
+id="state"
+placeholder="الولاية">
+
+<input
+type="text"
+id="city"
+placeholder="البلدية">
+
+<input
+type="text"
+id="phone"
+placeholder="رقم الهاتف">
+
+<input
+type="email"
+id="email"
+placeholder="البريد الإلكتروني">
+
+<textarea
+id="description"
+placeholder="وصف العقار"></textarea>
+
+<input
+type="file"
+id="image"
+accept="image/*">
 
 <button type="submit">
-إضافة العقار
+
+نشر العقار
+
 </button>
 
 </form>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="app.js"></script>
+
+</body>
+
+</html>
