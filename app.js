@@ -135,3 +135,4 @@ async function updateProfile(fullName, phone) {
 
   console.log("Profile updated successfully")
 }
+update supabase app.js
