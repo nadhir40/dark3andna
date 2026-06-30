@@ -126,7 +126,7 @@ if(imageFile){
 const fileName=Date.now()+"_"+imageFile.name;
 
 const {error:uploadError}=await supabase.storage
-.from("properties")
+.from("property-images")
 .upload(fileName,imageFile);
 
 if(uploadError){
@@ -135,7 +135,7 @@ return;
 }
 
 const {data}=supabase.storage
-.from("properties")
+.from("property-images")
 .getPublicUrl(fileName);
 
 imageUrl=data.publicUrl;
