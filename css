@@ -1,1 +1,193 @@
 
+# 6. rent.html - Properties for rent
+rent_html = '''<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>عقارات للإيجار | دارك عندنا</title>
+    <meta name="description" content="تصفح أفضل العقارات المتاحة للإيجار في الجزائر على منصة دارك عندنا">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-home"></i>
+                دارك عندنا
+            </a>
+            <button class="mobile-menu-btn" onclick="toggleMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html"><i class="fas fa-home"></i> الرئيسية</a></li>
+                <li><a href="buy.html"><i class="fas fa-shopping-cart"></i> للبيع</a></li>
+                <li><a href="rent.html" class="active"><i class="fas fa-key"></i> للإيجار</a></li>
+                <li><a href="contact.html"><i class="fas fa-envelope"></i> تواصل معنا</a></li>
+                <li><a href="login.html"><i class="fas fa-user"></i> تسجيل الدخول</a></li>
+                <li><a href="add-property.html" class="btn-add"><i class="fas fa-plus-circle"></i> أضف عقارك</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div style="margin-top: 70px; background: linear-gradient(135deg, var(--primary) 0%, var(--dark-light) 100%); padding: 60px 20px; text-align: center; color: var(--white);">
+        <h1 id="pageTitle" style="font-size: 2.2rem; margin-bottom: 10px;">عقارات للإيجار</h1>
+        <p id="pageSubtitle" style="opacity: 0.9; font-size: 1.1rem;">تصفح أفضل العقارات المتاحة للإيجار في الجزائر</p>
+    </div>
+
+    <!-- Filters -->
+    <div style="background: var(--white); padding: 25px 20px; box-shadow: var(--shadow); border-bottom: 1px solid var(--gray-light);">
+        <div style="max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; align-items: end;">
+            <div class="form-group" style="margin-bottom: 0;">
+                <label style="font-size: 0.85rem; color: var(--gray);">البحث</label>
+                <input type="text" id="filterSearch" class="form-control" placeholder="ابحث..." style="padding: 12px;">
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+                <label style="font-size: 0.85rem; color: var(--gray);">المدينة</label>
+                <select id="filterCity" class="form-control form-select" style="padding: 12px;">
+                    <option value="">جميع المدن</option>
+                    <option value="الجزائر العاصمة">الجزائر العاصمة</option>
+                    <option value="وهران">وهران</option>
+                    <option value="قسنطينة">قسنطينة</option>
+                    <option value="عنابة">عنابة</option>
+                    <option value="سطيف">سطيف</option>
+                    <option value="باتنة">باتنة</option>
+                    <option value="بلعباس">بلعباس</option>
+                    <option value="تلمسان">تلمسان</option>
+                    <option value="سكيكدة">سكيكدة</option>
+                    <option value="بجاية">بجاية</option>
+                    <option value="تيارت">تيارت</option>
+                    <option value="المدية">المدية</option>
+                    <option value="الشلف">الشلف</option>
+                    <option value="جيجل">جيجل</option>
+                    <option value="بسكرة">بسكرة</option>
+                    <option value="ورقلة">ورقلة</option>
+                    <option value="الأغواط">الأغواط</option>
+                    <option value="غرداية">غرداية</option>
+                    <option value="تيزي وزو">تيزي وزو</option>
+                    <option value="البويرة">البويرة</option>
+                    <option value="الطارف">الطارف</option>
+                    <option value="قالمة">قالمة</option>
+                    <option value="خنشلة">خنشلة</option>
+                    <option value="تبسة">تبسة</option>
+                    <option value="سوق أهراس">سوق أهراس</option>
+                    <option value="الوادي">الوادي</option>
+                    <option value="البيض">البيض</option>
+                    <option value="النعامة">النعامة</option>
+                    <option value="تندوف">تندوف</option>
+                    <option value="إليزي">إليزي</option>
+                    <option value="أدرار">أدرار</option>
+                    <option value="تمنراست">تمنراست</option>
+                    <option value="تيميمون">تيميمون</option>
+                    <option value="أولاد جلال">أولاد جلال</option>
+                    <option value="بني عباس">بني عباس</option>
+                    <option value="عين صالح">عين صالح</option>
+                    <option value="عين قزام">عين قزام</option>
+                    <option value="تقرت">تقرت</option>
+                    <option value="جانت">جانت</option>
+                    <option value="المغير">المغير</option>
+                    <option value="المنيعة">المنيعة</option>
+                </select>
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+                <label style="font-size: 0.85rem; color: var(--gray);">نوع العملية</label>
+                <select id="filterType" class="form-control form-select" style="padding: 12px;">
+                    <option value="">الكل</option>
+                    <option value="sale">للبيع</option>
+                    <option value="rent">للإيجار</option>
+                </select>
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+                <label style="font-size: 0.85rem; color: var(--gray);">السعر الأدنى</label>
+                <input type="number" id="filterMinPrice" class="form-control" placeholder="مثال: 10000" style="padding: 12px;">
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+                <label style="font-size: 0.85rem; color: var(--gray);">السعر الأقصى</label>
+                <input type="number" id="filterMaxPrice" class="form-control" placeholder="مثال: 100000" style="padding: 12px;">
+            </div>
+            <button class="btn-search" onclick="applyFilters()" style="height: fit-content;">
+                <i class="fas fa-filter"></i> تطبيق الفلتر
+            </button>
+        </div>
+    </div>
+
+    <!-- Properties Grid -->
+    <section class="section">
+        <div class="properties-grid" id="propertiesList">
+            <div class="loading-overlay" style="grid-column: 1 / -1; position: static; background: transparent;">
+                <div class="spinner"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <h3><i class="fas fa-home"></i> دارك عندنا</h3>
+                <p>منصة العقارات الأولى في الجزائر. نساعدك في العثور على منزل أحلامك أو بيع/تأجير عقارك بسهولة وأمان.</p>
+                <div class="footer-social">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-telegram"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+            <div class="footer-links">
+                <h4>روابط سريعة</h4>
+                <ul>
+                    <li><a href="index.html">الرئيسية</a></li>
+                    <li><a href="buy.html">عقارات للبيع</a></li>
+                    <li><a href="rent.html">عقارات للإيجار</a></li>
+                    <li><a href="add-property.html">أضف عقارك</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>المساعدة</h4>
+                <ul>
+                    <li><a href="contact.html">تواصل معنا</a></li>
+                    <li><a href="#">كيفية الاستخدام</a></li>
+                    <li><a href="#">الأسئلة الشائعة</a></li>
+                    <li><a href="#">شروط الاستخدام</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>تواصل معنا</h4>
+                <ul>
+                    <li><i class="fas fa-phone"></i> +213 XXX XX XX XX</li>
+                    <li><i class="fas fa-envelope"></i> info@darak3andna.com</li>
+                    <li><i class="fas fa-map-marker-alt"></i> الجزائر العاصمة</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 دارك عندنا - جميع الحقوق محفوظة</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        function toggleMenu() {
+            document.getElementById('navLinks').classList.toggle('active');
+        }
+        
+        // Set default filter to rent
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterType = document.getElementById('filterType');
+            if (filterType) filterType.value = 'rent';
+        });
+    </script>
+</body>
+</html>
+'''
+
+with open('/mnt/agents/output/darak3andna/rent.html', 'w', encoding='utf-8') as f:
+    f.write(rent_html)
+
+print("✅ rent.html created (", len(rent_html), "chars)")
+
