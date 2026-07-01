@@ -1,1 +1,305 @@
 
+# 3. index.html - Homepage
+index_html = '''<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دارك عندنا | منصة العقارات الأولى في الجزائر</title>
+    <meta name="description" content="منصة دارك عندنا - بيع، شراء، وإيجار العقارات في الجزائر. أضف عقارك مجاناً.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-home"></i>
+                دارك عندنا
+            </a>
+            <button class="mobile-menu-btn" onclick="toggleMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html" class="active"><i class="fas fa-home"></i> الرئيسية</a></li>
+                <li><a href="buy.html"><i class="fas fa-shopping-cart"></i> للبيع</a></li>
+                <li><a href="rent.html"><i class="fas fa-key"></i> للإيجار</a></li>
+                <li><a href="contact.html"><i class="fas fa-envelope"></i> تواصل معنا</a></li>
+                <li><a href="login.html"><i class="fas fa-user"></i> تسجيل الدخول</a></li>
+                <li><a href="add-property.html" class="btn-add"><i class="fas fa-plus-circle"></i> أضف عقارك</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>ابحث عن <span>منزل أحلامك</span> في الجزائر</h1>
+            <p>منصة دارك عندنا توفر لك أفضل العقارات للبيع والإيجار في جميع ولايات الجزائر</p>
+            
+            <div class="search-box">
+                <div class="form-group">
+                    <label><i class="fas fa-search"></i> البحث</label>
+                    <input type="text" id="searchInput" placeholder="ابحث باسم المدينة أو الحي...">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-city"></i> المدينة</label>
+                    <select id="searchCity">
+                        <option value="">جميع المدن</option>
+                        <option value="الجزائر العاصمة">الجزائر العاصمة</option>
+                        <option value="وهران">وهران</option>
+                        <option value="قسنطينة">قسنطينة</option>
+                        <option value="عنابة">عنابة</option>
+                        <option value="سطيف">سطيف</option>
+                        <option value="باتنة">باتنة</option>
+                        <option value="بلعباس">بلعباس</option>
+                        <option value="تلمسان">تلمسان</option>
+                        <option value="سكيكدة">سكيكدة</option>
+                        <option value="بجاية">بجاية</option>
+                        <option value="تيارت">تيارت</option>
+                        <option value="المدية">المدية</option>
+                        <option value="الشلف">الشلف</option>
+                        <option value="جيجل">جيجل</option>
+                        <option value="بسكرة">بسكرة</option>
+                        <option value="ورقلة">ورقلة</option>
+                        <option value="الأغواط">الأغواط</option>
+                        <option value="غرداية">غرداية</option>
+                        <option value="تيزي وزو">تيزي وزو</option>
+                        <option value=" Béjaïa">بجاية</option>
+                        <option value="البويرة">البويرة</option>
+                        <option value="الطارف">الطارف</option>
+                        <option value="قالمة">قالمة</option>
+                        <option value="خنشلة">خنشلة</option>
+                        <option value="تبسة">تبسة</option>
+                        <option value="سوق أهراس">سوق أهراس</option>
+                        <option value="الوادي">الوادي</option>
+                        <option value="البيض">البيض</option>
+                        <option value="النعامة">النعامة</option>
+                        <option value="تندوف">تندوف</option>
+                        <option value="إليزي">إليزي</option>
+                        <option value="أدرار">أدرار</option>
+                        <option value="تمنراست">تمنراست</option>
+                        <option value="تيميمون">تيميمون</option>
+                        <option value="أولاد جلال">أولاد جلال</option>
+                        <option value="بني عباس">بني عباس</option>
+                        <option value="عين صالح">عين صالح</option>
+                        <option value="عين قزام">عين قزام</option>
+                        <option value="تقرت">تقرت</option>
+                        <option value="جانت">جانت</option>
+                        <option value="المغير">المغير</option>
+                        <option value="المنيعة">المنيعة</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-tag"></i> نوع العملية</label>
+                    <select id="searchType">
+                        <option value="">الكل</option>
+                        <option value="sale">للبيع</option>
+                        <option value="rent">للإيجار</option>
+                    </select>
+                </div>
+                <button class="btn-search" onclick="searchProperties()">
+                    <i class="fas fa-search"></i> بحث
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+        <div class="stats-container">
+            <div class="stat-item">
+                <i class="fas fa-building"></i>
+                <span class="stat-number" id="statProperties">0</span>
+                <div class="stat-label">عقار معروض</div>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-handshake"></i>
+                <span class="stat-number" id="statDeals">0</span>
+                <div class="stat-label">صفقة ناجحة</div>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-users"></i>
+                <span class="stat-number" id="statUsers">0</span>
+                <div class="stat-label">مستخدم مسجل</div>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <span class="stat-number" id="statCities">48</span>
+                <div class="stat-label">ولاية</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Featured Properties -->
+    <section class="section">
+        <div class="section-header">
+            <h2>أحدث <span>العقارات</span></h2>
+            <p>تصفح أحدث العقارات المضافة على منصتنا</p>
+        </div>
+        <div class="properties-grid" id="latestProperties">
+            <div class="loading-overlay">
+                <div class="spinner"></div>
+            </div>
+        </div>
+        <div style="text-align: center; margin-top: 40px;">
+            <a href="buy.html" class="btn-view" style="font-size: 1.1rem; padding: 14px 35px;">
+                <i class="fas fa-th-large"></i> عرض جميع العقارات
+            </a>
+        </div>
+    </section>
+
+    <!-- Categories -->
+    <section class="section" style="background: var(--white); margin: 0; max-width: 100%; padding: 80px 20px;">
+        <div style="max-width: 1400px; margin: 0 auto;">
+            <div class="section-header">
+                <h2>تصفح حسب <span>الفئة</span></h2>
+                <p>اختر نوع العقار الذي تبحث عنه</p>
+            </div>
+            <div class="categories-grid">
+                <a href="buy.html" class="category-card">
+                    <i class="fas fa-home"></i>
+                    <h3>منازل</h3>
+                    <p>فيلات، منازل مستقلة، ومنازل توين</p>
+                </a>
+                <a href="buy.html" class="category-card">
+                    <i class="fas fa-building"></i>
+                    <h3>شقق</h3>
+                    <p>شقق سكنية بمساحات مختلفة</p>
+                </a>
+                <a href="buy.html" class="category-card">
+                    <i class="fas fa-store"></i>
+                    <h3>محلات تجارية</h3>
+                    <p>محلات، مكاتب، ومساحات تجارية</p>
+                </a>
+                <a href="buy.html" class="category-card">
+                    <i class="fas fa-warehouse"></i>
+                    <h3>أراضي</h3>
+                    <p>أراضي سكنية وتجارية وزراعية</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="section">
+        <div class="section-header">
+            <h2>كيف <span>يعمل</span> الموقع؟</h2>
+            <p>ثلاث خطوات بسيطة للحصول على عقارك</p>
+        </div>
+        <div class="steps-grid">
+            <div class="step-card">
+                <div class="step-number">1</div>
+                <h3>ابحث عن عقارك</h3>
+                <p>استخدم خيارات البحث المتقدمة للعثور على العقار المثالي</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">2</div>
+                <h3>تواصل مع المالك</h3>
+                <p>احصل على معلومات الاتصال وتواصل مباشرة مع صاحب العقار</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">3</div>
+                <h3>أغلق الصفقة</h3>
+                <p>زيارة العقار والاتفاق على التفاصيل وإتمام العملية</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">4</div>
+                <h3>أضف عقارك</h3>
+                <p>هل تريد بيع أو تأجير؟ أضف عقارك مجاناً على المنصة</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-content">
+            <h2>هل تريد بيع أو تأجير عقارك؟</h2>
+            <p>أضف عقارك الآن على منصة دارك عندنا ووصل لآلاف المشترين والمستأجرين</p>
+            <a href="add-property.html" class="btn-cta">
+                <i class="fas fa-plus-circle"></i> أضف عقارك مجاناً
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <h3><i class="fas fa-home"></i> دارك عندنا</h3>
+                <p>منصة العقارات الأولى في الجزائر. نساعدك في العثور على منزل أحلامك أو بيع/تأجير عقارك بسهولة وأمان.</p>
+                <div class="footer-social">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-telegram"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+            <div class="footer-links">
+                <h4>روابط سريعة</h4>
+                <ul>
+                    <li><a href="index.html">الرئيسية</a></li>
+                    <li><a href="buy.html">عقارات للبيع</a></li>
+                    <li><a href="rent.html">عقارات للإيجار</a></li>
+                    <li><a href="add-property.html">أضف عقارك</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>المساعدة</h4>
+                <ul>
+                    <li><a href="contact.html">تواصل معنا</a></li>
+                    <li><a href="#">كيفية الاستخدام</a></li>
+                    <li><a href="#">الأسئلة الشائعة</a></li>
+                    <li><a href="#">شروط الاستخدام</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>تواصل معنا</h4>
+                <ul>
+                    <li><i class="fas fa-phone"></i> +213 XXX XX XX XX</li>
+                    <li><i class="fas fa-envelope"></i> info@darak3andna.com</li>
+                    <li><i class="fas fa-map-marker-alt"></i> الجزائر العاصمة</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 دارك عندنا - جميع الحقوق محفوظة</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        // Mobile menu toggle
+        function toggleMenu() {
+            document.getElementById('navLinks').classList.toggle('active');
+        }
+        
+        // Search redirect
+        function searchProperties() {
+            const city = document.getElementById('searchCity').value;
+            const type = document.getElementById('searchType').value;
+            const query = document.getElementById('searchInput').value;
+            
+            let url = 'buy.html';
+            const params = [];
+            if (city) params.push('city=' + encodeURIComponent(city));
+            if (type) params.push('type=' + type);
+            if (query) params.push('q=' + encodeURIComponent(query));
+            
+            if (params.length > 0) url += '?' + params.join('&');
+            window.location.href = url;
+        }
+    </script>
+</body>
+</html>
+'''
+
+with open('/mnt/agents/output/darak3andna/index.html', 'w', encoding='utf-8') as f:
+    f.write(index_html)
+
+print("✅ index.html created (", len(index_html), "chars)")
+
