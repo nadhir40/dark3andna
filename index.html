@@ -1,123 +1,47 @@
-<!DOCTYPE html>
-<html lang="ar">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Darak 3andna</title>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+# 1. supabase-config.js - Supabase configuration
+supabase_config = '''// Supabase Configuration
+const SUPABASE_URL = 'https://znguekkrzfgqwxuvnrph.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpuZ3Vla2tyemZncXd4dXZucnBoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0MTMxMjUsImV4cCI6MjA5Nzk4OTEyNX0.XOst38V9w6K8wDywyKQJNgS-Nsj_BKHsuUgBIbEE0y4';
 
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}
-body{background:#f5f7fa;}
+// Initialize Supabase client
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-.topbar{
-position:fixed;top:0;left:0;right:0;height:70px;
-background:#fff;display:flex;align-items:center;
-justify-content:space-between;padding:0 20px;
-box-shadow:0 2px 10px rgba(0,0,0,.08);z-index:999;
+// Helper functions
+async function getCurrentUser() {
+    const { data: { user } } = await supabase.auth.getUser();
+    return user;
 }
 
-.menu-btn{font-size:28px;border:none;background:none;cursor:pointer;}
-
-.logo{font-size:26px;font-weight:700;color:#006AFF;}
-
-.signin{text-decoration:none;color:#006AFF;font-weight:bold;}
-
-.user-info{font-size:14px;color:#333;margin-right:10px;}
-
-.sidebar{
-position:fixed;top:0;left:-320px;width:300px;height:100%;
-background:#fff;transition:.3s;z-index:1000;
-box-shadow:2px 0 20px rgba(0,0,0,.15);overflow:auto;
+async function signOut() {
+    await supabase.auth.signOut();
+    window.location.href = 'index.html';
 }
 
-.sidebar.active{left:0;}
-
-.sidebar-header{padding:20px;border-bottom:1px solid #eee;}
-
-.sidebar-header button{font-size:30px;border:none;background:none;cursor:pointer;}
-
-.sidebar-header h2{margin-top:10px;color:#006AFF;}
-
-.sidebar a{display:block;padding:18px 25px;text-decoration:none;color:#222;font-size:18px;}
-.sidebar a:hover{background:#f5f5f5;}
-
-.hero{
-height:90vh;
-background:url('https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=1600') center/cover;
-display:flex;align-items:center;justify-content:center;
-color:#fff;font-size:40px;font-weight:bold;
-text-shadow:0 5px 10px rgba(0,0,0,.4);
-}
-</style>
-
-</head>
-<body>
-
-<!-- TOP BAR -->
-<div class="topbar">
-<button class="menu-btn" onclick="toggleMenu()">☰</button>
-<div class="logo">Darak 3andna</div>
-
-<div style="display:flex;align-items:center;gap:10px;">
-<span id="userInfo" class="user-info"></span>
-<a id="loginBtn" class="signin" href="login.html">Login</a>
-</div>
-</div>
-
-<!-- SIDEBAR -->
-<div class="sidebar">
-<div class="sidebar-header">
-<button onclick="toggleMenu()">×</button>
-<h2>Menu</h2>
-</div>
-
-<a href="index.html">🏠 Home</a>
-<a href="add-property.html">➕ أضف عقارك</a>
-<a href="#" onclick="signOut()">🚪 Logout</a>
-</div>
-
-<!-- HERO -->
-<div class="hero">
-Find Your Dream Home
-</div>
-
-<!-- SCRIPTS -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="app.js"></script>
-
-<script>
-function toggleMenu(){
-document.querySelector(".sidebar").classList.toggle("active");
+// Show notification
+function showNotification(message, type = 'success') {
+    const notif = document.createElement('div');
+    notif.className = `notification ${type}`;
+    notif.innerHTML = `
+        <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+        <span>${message}</span>
+    `;
+    document.body.appendChild(notif);
+    setTimeout(() => notif.remove(), 3000);
 }
 
-// تحديث الواجهة
-async function updateUI(){
-const user = await getUser();
-
-const userInfo = document.getElementById("userInfo");
-const loginBtn = document.getElementById("loginBtn");
-
-if(user){
-userInfo.innerText = user.email;
-
-loginBtn.innerText = "Logout";
-loginBtn.href = "#";
-
-loginBtn.onclick = async () => {
-await signOut();
-};
-}else{
-userInfo.innerText = "";
-loginBtn.innerText = "Login";
-loginBtn.href = "login.html";
-loginBtn.onclick = null;
-}
+// Format price
+function formatPrice(price) {
+    return new Intl.NumberFormat('ar-DZ').format(price) + ' دج';
 }
 
-updateUI();
-</script>
+// Format date
+function formatDate(dateString) {
+    return new Date(dateString).toLocaleDateString('ar-DZ');
+}
+'''
 
-</body>
-</html>
+with open('/mnt/agents/output/darak3andna/js/supabase-config.js', 'w', encoding='utf-8') as f:
+    f.write(supabase_config)
+
+print("✅ supabase-config.js created")
