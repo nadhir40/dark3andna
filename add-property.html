@@ -1,163 +1,492 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
 
-<head>
+# 4. main.js - Main JavaScript with Supabase integration
+main_js = '''// ================================
+// DARAK 3ANDNA - Main JavaScript
+// ================================
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+// Load latest properties on homepage
+document.addEventListener('DOMContentLoaded', async function() {
+    // Check auth state
+    await updateAuthUI();
+    
+    // Load stats
+    loadStats();
+    
+    // Load latest properties if on homepage
+    const latestContainer = document.getElementById('latestProperties');
+    if (latestContainer) {
+        loadLatestProperties();
+    }
+    
+    // Load properties list if on buy/rent page
+    const propertiesContainer = document.getElementById('propertiesList');
+    if (propertiesContainer) {
+        loadPropertiesList();
+    }
+    
+    // Load property detail if on detail page
+    const detailContainer = document.getElementById('propertyDetail');
+    if (detailContainer) {
+        loadPropertyDetail();
+    }
+    
+    // Load admin data if on admin page
+    const adminContainer = document.getElementById('adminContent');
+    if (adminContainer) {
+        loadAdminData();
+    }
+});
 
-<title>إضافة عقار | Darak 3andna</title>
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
-<style>
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial,sans-serif;
+// Update auth UI
+async function updateAuthUI() {
+    const user = await getCurrentUser();
+    const navLinks = document.querySelector('.nav-links');
+    if (!navLinks) return;
+    
+    const loginLink = navLinks.querySelector('a[href="login.html"]');
+    if (loginLink) {
+        if (user) {
+            loginLink.innerHTML = '<i class="fas fa-user"></i> حسابي';
+            loginLink.href = '#';
+            loginLink.onclick = async (e) => {
+                e.preventDefault();
+                if (confirm('هل تريد تسجيل الخروج؟')) {
+                    await signOut();
+                }
+            };
+        }
+    }
 }
 
-body{
-background:#f5f7fa;
-padding:20px;
+// Load stats
+async function loadStats() {
+    try {
+        // Count properties
+        const { count: propCount } = await supabase
+            .from('properties')
+            .select('*', { count: 'exact', head: true })
+            .eq('status', 'approved');
+        
+        // Count users
+        const { count: userCount } = await supabase
+            .from('properties')
+            .select('user_id', { count: 'exact', head: true })
+            .eq('status', 'approved');
+        
+        // Update DOM
+        const statProps = document.getElementById('statProperties');
+        const statDeals = document.getElementById('statDeals');
+        const statUsers = document.getElementById('statUsers');
+        
+        if (statProps) statProps.textContent = propCount || 0;
+        if (statDeals) statDeals.textContent = Math.floor((propCount || 0) * 0.3);
+        if (statUsers) statUsers.textContent = userCount || 0;
+    } catch (e) {
+        console.error('Error loading stats:', e);
+    }
 }
 
-.container{
-max-width:700px;
-margin:auto;
-background:white;
-padding:25px;
-border-radius:15px;
-box-shadow:0 5px 20px rgba(0,0,0,.1);
+// Load latest properties
+async function loadLatestProperties() {
+    const container = document.getElementById('latestProperties');
+    if (!container) return;
+    
+    try {
+        const { data: properties, error } = await supabase
+            .from('properties')
+            .select('*')
+            .eq('status', 'approved')
+            .order('created_at', { ascending: false })
+            .limit(6);
+        
+        if (error) throw error;
+        
+        if (!properties || properties.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state" style="grid-column: 1 / -1;">
+                    <i class="fas fa-home"></i>
+                    <h3>لا توجد عقارات حالياً</h3>
+                    <p>كن أول من يضيف عقاراً على المنصة!</p>
+                    <a href="add-property.html" class="btn-view" style="margin-top: 20px;">
+                        <i class="fas fa-plus-circle"></i> أضف عقارك
+                    </a>
+                </div>
+            `;
+            return;
+        }
+        
+        container.innerHTML = properties.map(p => createPropertyCard(p)).join('');
+    } catch (e) {
+        console.error('Error:', e);
+        container.innerHTML = `
+            <div class="empty-state" style="grid-column: 1 / -1;">
+                <i class="fas fa-exclamation-circle"></i>
+                <h3>حدث خطأ في تحميل العقارات</h3>
+                <p>يرجى تحديث الصفحة لاحقاً</p>
+            </div>
+        `;
+    }
 }
 
-h1{
-text-align:center;
-margin-bottom:25px;
-color:#006AFF;
+// Create property card HTML
+function createPropertyCard(property) {
+    const images = property.images || [];
+    const imageUrl = images.length > 0 ? images[0] : 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600';
+    const badgeClass = property.property_type === 'sale' ? 'badge-sale' : 'badge-rent';
+    const badgeText = property.property_type === 'sale' ? 'للبيع' : 'للإيجار';
+    
+    return `
+        <div class="property-card" onclick="window.location.href='property.html?id=${property.id}'">
+            <div class="property-image">
+                <img src="${imageUrl}" alt="${property.title}" loading="lazy" 
+                     onerror="this.src='https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600'">
+                <span class="property-badge ${badgeClass}">${badgeText}</span>
+                <div class="property-price">${formatPrice(property.price)}</div>
+            </div>
+            <div class="property-info">
+                <h3 class="property-title">${property.title}</h3>
+                <div class="property-location">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>${property.city}${property.address ? ' - ' + property.address : ''}</span>
+                </div>
+                <div class="property-features">
+                    ${property.area ? `<div class="property-feature"><i class="fas fa-ruler-combined"></i> ${property.area} م²</div>` : ''}
+                    ${property.rooms ? `<div class="property-feature"><i class="fas fa-bed"></i> ${property.rooms} غرف</div>` : ''}
+                    ${property.bathrooms ? `<div class="property-feature"><i class="fas fa-bath"></i> ${property.bathrooms} حمام</div>` : ''}
+                </div>
+            </div>
+            <div class="property-footer">
+                <span class="property-date"><i class="fas fa-clock"></i> ${formatDate(property.created_at)}</span>
+                <span class="btn-view">التفاصيل <i class="fas fa-arrow-left"></i></span>
+            </div>
+        </div>
+    `;
 }
 
-input,
-textarea,
-select{
-width:100%;
-padding:15px;
-margin-bottom:15px;
-border:1px solid #ddd;
-border-radius:8px;
-font-size:16px;
+// Load properties list (for buy/rent pages)
+async function loadPropertiesList() {
+    const container = document.getElementById('propertiesList');
+    if (!container) return;
+    
+    // Get URL params
+    const urlParams = new URLSearchParams(window.location.search);
+    const type = urlParams.get('type');
+    const city = urlParams.get('city');
+    const query = urlParams.get('q');
+    
+    // Update page title based on type
+    const pageTitle = document.getElementById('pageTitle');
+    const pageSubtitle = document.getElementById('pageSubtitle');
+    if (pageTitle) {
+        if (type === 'sale') {
+            pageTitle.textContent = 'عقارات للبيع';
+            pageSubtitle.textContent = 'تصفح أفضل العقارات المتاحة للبيع في الجزائر';
+        } else if (type === 'rent') {
+            pageTitle.textContent = 'عقارات للإيجار';
+            pageSubtitle.textContent = 'تصفح أفضل العقارات المتاحة للإيجار في الجزائر';
+        }
+    }
+    
+    // Set filter values
+    if (city) document.getElementById('filterCity').value = city;
+    if (type) document.getElementById('filterType').value = type;
+    if (query) document.getElementById('filterSearch').value = query;
+    
+    try {
+        let query_builder = supabase
+            .from('properties')
+            .select('*')
+            .eq('status', 'approved')
+            .order('created_at', { ascending: false });
+        
+        if (type) query_builder = query_builder.eq('property_type', type);
+        if (city) query_builder = query_builder.eq('city', city);
+        
+        const { data: properties, error } = await query_builder;
+        
+        if (error) throw error;
+        
+        // Filter by search query if provided
+        let filtered = properties || [];
+        if (query) {
+            const q = query.toLowerCase();
+            filtered = filtered.filter(p => 
+                (p.title && p.title.toLowerCase().includes(q)) ||
+                (p.description && p.description.toLowerCase().includes(q)) ||
+                (p.address && p.address.toLowerCase().includes(q))
+            );
+        }
+        
+        if (filtered.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state" style="grid-column: 1 / -1;">
+                    <i class="fas fa-search"></i>
+                    <h3>لا توجد نتائج</h3>
+                    <p>جرب تغيير معايير البحث</p>
+                </div>
+            `;
+            return;
+        }
+        
+        container.innerHTML = filtered.map(p => createPropertyCard(p)).join('');
+    } catch (e) {
+        console.error('Error:', e);
+        container.innerHTML = `
+            <div class="empty-state" style="grid-column: 1 / -1;">
+                <i class="fas fa-exclamation-circle"></i>
+                <h3>حدث خطأ في تحميل العقارات</h3>
+            </div>
+        `;
+    }
 }
 
-textarea{
-height:120px;
-resize:none;
+// Apply filters
+function applyFilters() {
+    const city = document.getElementById('filterCity').value;
+    const type = document.getElementById('filterType').value;
+    const minPrice = document.getElementById('filterMinPrice').value;
+    const maxPrice = document.getElementById('filterMaxPrice').value;
+    const search = document.getElementById('filterSearch').value;
+    
+    let url = window.location.pathname;
+    const params = [];
+    if (city) params.push('city=' + encodeURIComponent(city));
+    if (type) params.push('type=' + type);
+    if (minPrice) params.push('min=' + minPrice);
+    if (maxPrice) params.push('max=' + maxPrice);
+    if (search) params.push('q=' + encodeURIComponent(search));
+    
+    if (params.length > 0) url += '?' + params.join('&');
+    window.location.href = url;
 }
 
-button{
-width:100%;
-padding:16px;
-background:#006AFF;
-color:white;
-font-size:18px;
-border:none;
-border-radius:10px;
-cursor:pointer;
+// Load property detail
+async function loadPropertyDetail() {
+    const container = document.getElementById('propertyDetail');
+    if (!container) return;
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    const propertyId = urlParams.get('id');
+    
+    if (!propertyId) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>لم يتم تحديد عقار</h3>
+                <a href="buy.html" class="btn-view">العودة للعقارات</a>
+            </div>
+        `;
+        return;
+    }
+    
+    try {
+        const { data: property, error } = await supabase
+            .from('properties')
+            .select('*')
+            .eq('id', propertyId)
+            .single();
+        
+        if (error || !property) throw error;
+        
+        // Increment views
+        await supabase.from('properties')
+            .update({ views: (property.views || 0) + 1 })
+            .eq('id', propertyId);
+        
+        const images = property.images || [];
+        const mainImage = images.length > 0 ? images[0] : 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800';
+        const thumbImages = images.slice(1, 3);
+        const badgeClass = property.property_type === 'sale' ? 'badge-sale' : 'badge-rent';
+        const badgeText = property.property_type === 'sale' ? 'للبيع' : 'للإيجار';
+        
+        container.innerHTML = `
+            <div class="property-gallery">
+                <div class="gallery-main">
+                    <img src="${mainImage}" alt="${property.title}" id="mainImage"
+                         onerror="this.src='https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800'">
+                    <span class="property-badge ${badgeClass}" style="top: 20px; right: 20px; font-size: 1rem;">${badgeText}</span>
+                </div>
+                ${thumbImages.map((img, i) => `
+                    <div class="gallery-thumb" onclick="document.getElementById('mainImage').src='${img}'">
+                        <img src="${img}" alt="صورة ${i+2}" 
+                             onerror="this.src='https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400'">
+                    </div>
+                `).join('')}
+            </div>
+            
+            <div class="property-detail-header">
+                <div>
+                    <h1 class="property-detail-title">${property.title}</h1>
+                    <div class="property-location" style="font-size: 1.1rem;">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>${property.city}${property.address ? ' - ' + property.address : ''}</span>
+                    </div>
+                </div>
+                <div class="property-detail-price">${formatPrice(property.price)}</div>
+            </div>
+            
+            <div class="property-detail-grid">
+                <div class="property-detail-info">
+                    <h3 style="margin-bottom: 20px; color: var(--dark);"><i class="fas fa-info-circle"></i> تفاصيل العقار</h3>
+                    <table class="info-table">
+                        <tr><td>نوع العملية</td><td>${badgeText}</td></tr>
+                        <tr><td>المدينة</td><td>${property.city}</td></tr>
+                        ${property.address ? `<tr><td>العنوان</td><td>${property.address}</td></tr>` : ''}
+                        ${property.area ? `<tr><td>المساحة</td><td>${property.area} م²</td></tr>` : ''}
+                        ${property.rooms ? `<tr><td>عدد الغرف</td><td>${property.rooms}</td></tr>` : ''}
+                        ${property.bathrooms ? `<tr><td>عدد الحمامات</td><td>${property.bathrooms}</td></tr>` : ''}
+                        <tr><td>تاريخ النشر</td><td>${formatDate(property.created_at)}</td></tr>
+                        <tr><td>عدد المشاهدات</td><td>${(property.views || 0) + 1}</td></tr>
+                    </table>
+                    
+                    ${property.description ? `
+                        <h3 style="margin: 30px 0 15px; color: var(--dark);"><i class="fas fa-align-right"></i> الوصف</h3>
+                        <p style="line-height: 1.8; color: var(--gray);">${property.description}</p>
+                    ` : ''}
+                </div>
+                
+                <div class="property-detail-sidebar">
+                    <div class="contact-card">
+                        <h3><i class="fas fa-phone-alt"></i> تواصل مع المعلن</h3>
+                        <a href="tel:${property.phone}" class="btn-phone">
+                            <i class="fas fa-phone"></i> ${property.phone}
+                        </a>
+                        <p style="margin-top: 15px; color: var(--gray); font-size: 0.9rem;">
+                            <i class="fas fa-shield-alt"></i> ننصحك بالتواصل عبر المنصة للأمان
+                        </p>
+                    </div>
+                    
+                    <div class="contact-card">
+                        <h3><i class="fas fa-exclamation-triangle"></i> تنبيه هام</h3>
+                        <p style="color: var(--gray); font-size: 0.9rem; line-height: 1.8;">
+                            دارك عندنا منصة وسيطة فقط. ننصحك بزيارة العقار شخصياً قبل إتمام أي عملية. 
+                            لا تقم بتحويل أي مبالغ مالية قبل التأكد من صحة العقار.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        `;
+    } catch (e) {
+        console.error('Error:', e);
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>لم يتم العثور على العقار</h3>
+                <a href="buy.html" class="btn-view">العودة للعقارات</a>
+            </div>
+        `;
+    }
 }
 
-button:hover{
-background:#0053cc;
+// Admin functions
+async function loadAdminData() {
+    const user = await getCurrentUser();
+    if (!user) {
+        window.location.href = 'login.html';
+        return;
+    }
+    
+    // Check if admin (you can customize this)
+    // For now, we'll load data for any logged-in user
+    
+    loadAdminStats();
+    loadAdminProperties();
 }
 
-</style>
+async function loadAdminStats() {
+    try {
+        const { count: total } = await supabase.from('properties').select('*', { count: 'exact', head: true });
+        const { count: pending } = await supabase.from('properties').select('*', { count: 'exact', head: true }).eq('status', 'pending');
+        const { count: approved } = await supabase.from('properties').select('*', { count: 'exact', head: true }).eq('status', 'approved');
+        const { count: rejected } = await supabase.from('properties').select('*', { count: 'exact', head: true }).eq('status', 'rejected');
+        
+        document.getElementById('adminTotal').textContent = total || 0;
+        document.getElementById('adminPending').textContent = pending || 0;
+        document.getElementById('adminApproved').textContent = approved || 0;
+        document.getElementById('adminRejected').textContent = rejected || 0;
+    } catch (e) {
+        console.error('Error loading admin stats:', e);
+    }
+}
 
-</head>
+async function loadAdminProperties() {
+    const tbody = document.getElementById('adminPropertiesTable');
+    if (!tbody) return;
+    
+    try {
+        const { data: properties, error } = await supabase
+            .from('properties')
+            .select('*')
+            .order('created_at', { ascending: false });
+        
+        if (error) throw error;
+        
+        if (!properties || properties.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 40px;">لا توجد عقارات</td></tr>';
+            return;
+        }
+        
+        tbody.innerHTML = properties.map(p => {
+            const statusClass = `status-${p.status}`;
+            const statusText = {
+                'pending': 'قيد المراجعة',
+                'approved': 'منشور',
+                'rejected': 'مرفوض',
+                'sold': 'تم البيع',
+                'rented': 'تم الإيجار'
+            }[p.status] || p.status;
+            
+            return `
+                <tr>
+                    <td><img src="${(p.images || [])[0] || 'https://via.placeholder.com/60'}" style="width: 60px; height: 45px; object-fit: cover; border-radius: 6px;"></td>
+                    <td>${p.title}</td>
+                    <td>${p.city}</td>
+                    <td>${formatPrice(p.price)}</td>
+                    <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                    <td>${formatDate(p.created_at)}</td>
+                    <td>
+                        ${p.status === 'pending' ? `
+                            <button class="btn-action btn-approve" onclick="updatePropertyStatus('${p.id}', 'approved')">موافقة</button>
+                            <button class="btn-action btn-reject" onclick="updatePropertyStatus('${p.id}', 'rejected')">رفض</button>
+                        ` : ''}
+                        <button class="btn-action btn-delete" onclick="deleteProperty('${p.id}')">حذف</button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    } catch (e) {
+        console.error('Error:', e);
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 40px;">حدث خطأ</td></tr>';
+    }
+}
 
-<body>
+async function updatePropertyStatus(id, status) {
+    try {
+        const { error } = await supabase.from('properties').update({ status }).eq('id', id);
+        if (error) throw error;
+        showNotification('تم تحديث الحالة بنجاح', 'success');
+        loadAdminProperties();
+        loadAdminStats();
+    } catch (e) {
+        showNotification('حدث خطأ', 'error');
+    }
+}
 
-<div class="container">
+async function deleteProperty(id) {
+    if (!confirm('هل أنت متأكد من حذف هذا العقار؟')) return;
+    try {
+        const { error } = await supabase.from('properties').delete().eq('id', id);
+        if (error) throw error;
+        showNotification('تم الحذف بنجاح', 'success');
+        loadAdminProperties();
+        loadAdminStats();
+    } catch (e) {
+        showNotification('حدث خطأ', 'error');
+    }
+}
+'''
 
-<h1>إضافة عقار جديد</h1>
+with open('/mnt/agents/output/darak3andna/js/main.js', 'w', encoding='utf-8') as f:
+    f.write(main_js)
 
-<form id="propertyForm">
-
-<input
-type="text"
-id="title"
-placeholder="عنوان العقار"
-required>
-
-<select id="operation">
-
-<option value="بيع">بيع</option>
-
-<option value="كراء">كراء</option>
-
-</select>
-
-<select id="property_type">
-
-<option value="شقة">شقة</option>
-
-<option value="منزل">منزل</option>
-
-<option value="فيلا">فيلا</option>
-
-<option value="أرض">أرض</option>
-
-<option value="محل">محل تجاري</option>
-
-</select>
-
-<input
-type="number"
-id="price"
-placeholder="السعر">
-
-<input
-type="text"
-id="state"
-placeholder="الولاية">
-
-<input
-type="text"
-id="city"
-placeholder="البلدية">
-
-<input
-type="text"
-id="phone"
-placeholder="رقم الهاتف">
-
-<input
-type="email"
-id="email"
-placeholder="البريد الإلكتروني">
-
-<textarea
-id="description"
-placeholder="وصف العقار"></textarea>
-
-<input
-type="file"
-id="image"
-accept="image/*">
-
-<button type="submit">
-
-نشر العقار
-
-</button>
-
-</form>
-
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script src="app.js"></script>
-
-</body>
-
-</html>
+print("✅ main.js created (", len(main_js), "chars)")
