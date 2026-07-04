@@ -1,0 +1,47 @@
+
+# 1. supabase-config.js - Supabase configuration
+supabase_config = '''// Supabase Configuration
+const SUPABASE_URL = 'https://znguekkrzfgqwxuvnrph.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpuZ3Vla2tyemZncXd4dXZucnBoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0MTMxMjUsImV4cCI6MjA5Nzk4OTEyNX0.XOst38V9w6K8wDywyKQJNgS-Nsj_BKHsuUgBIbEE0y4';
+
+// Initialize Supabase client
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// Helper functions
+async function getCurrentUser() {
+    const { data: { user } } = await supabase.auth.getUser();
+    return user;
+}
+
+async function signOut() {
+    await supabase.auth.signOut();
+    window.location.href = 'index.html';
+}
+
+// Show notification
+function showNotification(message, type = 'success') {
+    const notif = document.createElement('div');
+    notif.className = `notification ${type}`;
+    notif.innerHTML = `
+        <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+        <span>${message}</span>
+    `;
+    document.body.appendChild(notif);
+    setTimeout(() => notif.remove(), 3000);
+}
+
+// Format price
+function formatPrice(price) {
+    return new Intl.NumberFormat('ar-DZ').format(price) + ' دج';
+}
+
+// Format date
+function formatDate(dateString) {
+    return new Date(dateString).toLocaleDateString('ar-DZ');
+}
+'''
+
+with open('/mnt/agents/output/darak3andna/js/supabase-config.js', 'w', encoding='utf-8') as f:
+    f.write(supabase_config)
+
+print("✅ supabase-config.js created")

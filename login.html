@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>تسجيل الدخول | Darak 3andna</title>
+
+<link rel="stylesheet" href="css/style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase.js"></script>
+<script src="js/auth.js"></script>
+
+</head>
+
+<body>
+
+<div class="login-box">
+
+<h1>Darak 3andna</h1>
+
+<h3>تسجيل الدخول</h3>
+
+<input
+type="email"
+id="email"
+placeholder="البريد الإلكتروني">
+
+<input
+type="password"
+id="password"
+placeholder="كلمة المرور">
+
+<button onclick="login()">
+
+تسجيل الدخول
+
+</button>
+
+<p>
+
+<a href="forgot-password.html">
+
+هل نسيت كلمة المرور؟
+
+</a>
+
+</p>
+
+<p>
+
+<a href="register.html">
+
+إنشاء حساب جديد
+
+</a>
+
+</p>
+
+</div>
+
+<script>
+
+async function login(){
+
+const email=document.getElementById("email").value;
+
+const password=document.getElementById("password").value;
+
+await signIn(email,password);
+
+}
+
+</script>
+
+</body>
+
+</html>
